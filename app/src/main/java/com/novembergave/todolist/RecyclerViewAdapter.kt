@@ -19,6 +19,8 @@ class RecyclerViewAdapter (list: List<ToDoItem>) : RecyclerView.Adapter<ItemView
 
     fun updateList(list: List<ToDoItem>) {
         this.list = list
+
+        notifyDataSetChanged()
     }
 
 }

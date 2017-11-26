@@ -76,7 +76,9 @@ class AddDialog : DialogFragment() {
 
     private fun addItemToList() = ToDoItem(getTitleToString(), getCurrentDate(), prioritySelection)
 
-    private fun getTitleToString() = titleTextInput.editText.toString()
+    private fun getTitleToString(): String {
+        return titleTextInput.editText!!.text.toString()
+    }
 
     private fun getCurrentDate(): String {
         val time = Calendar.getInstance().time

@@ -8,15 +8,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     override fun addItem(item: ToDoItem) {
-        // add to list
+        dummyList.add(item)
+        adapter.updateList(dummyList)
     }
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerViewAdapter
-    private var dummyList: List<ToDoItem> = arrayListOf(
-            ToDoItem("One", "25th November 2017", ToDoItem.Priority.HIGH),
-            ToDoItem("Two", "24th November 2017", ToDoItem.Priority.MEDIUM),
-            ToDoItem("Three", "23th November 2017", ToDoItem.Priority.LOW))
+    private var dummyList: MutableList<ToDoItem> = ArrayList()
     private lateinit var fabButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,12 +28,19 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
             pop.show(fm, "name")
         }
 
+        initialiseDummyList()
+
         linearLayoutManager = LinearLayoutManager(this)
         recyclerview.layoutManager = linearLayoutManager
-
         adapter = RecyclerViewAdapter(dummyList)
         recyclerview.adapter = adapter
 
-
     }
+
+    private fun initialiseDummyList() {
+        dummyList.add(ToDoItem("One", "25th November 2017", ToDoItem.Priority.HIGH))
+        dummyList.add(ToDoItem("Two", "24th November 2017", ToDoItem.Priority.MEDIUM))
+        dummyList.add(ToDoItem("Three", "23th November 2017", ToDoItem.Priority.LOW))
+    }
+
 }
