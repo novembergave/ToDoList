@@ -2,4 +2,15 @@
     <string name="app_name">To-Do List</string>
     <string name="to_do_item">To-Do Item</string>
     <string name="priority">Priority</string>
+    <string name="add_item">Add an Item</string>
+
+    <string name="high">High</string>
+    <string name="medium">Medium</string>
+    <string name="low">Low</string>
+
+    <string-array name="priority_levels">
+        <item>@string/high</item>
+        <item>@string/medium</item>
+        <item>@string/low</item>
+    </string-array>
 </resources>
