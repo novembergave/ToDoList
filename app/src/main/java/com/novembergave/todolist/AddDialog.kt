@@ -3,6 +3,7 @@ package com.novembergave.todolist
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
 import android.view.View
@@ -25,13 +26,10 @@ class AddDialog : DialogFragment() {
     private lateinit var listener: SaveNewToDoItem
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity)
         val inflater = activity.layoutInflater
-
         val view = inflater.inflate(R.layout.add_item_fragment, null)
         titleTextInput = view.findViewById(R.id.input_item_name_label)
         spinner = view.findViewById(R.id.spinner)
-
         val listOfItems = resources.getStringArray(R.array.priority_levels)
         val arrayAdapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, listOfItems)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -46,13 +44,14 @@ class AddDialog : DialogFragment() {
                     else -> ToDoItem.Priority.LOW
                 }
             }
-
             override fun onNothingSelected(arg0: AdapterView<*>) {
                 prioritySelection = ToDoItem.Priority.LOW
             }
 
         }
 
+
+        val builder = AlertDialog.Builder(activity)
         builder
                 .setTitle(R.string.add_item)
                 .setView(view)
@@ -60,12 +59,19 @@ class AddDialog : DialogFragment() {
                     d.cancel()
                 })
                 .setPositiveButton(android.R.string.ok, { d, _ ->
-                    // TODO: The listener still needs to be initialised
-//                    listener.addItem(addItemToList())
-                    d.cancel()
+                    listener.addItem(addItemToList())
+                    d.dismiss()
                 })
         // Create the AlertDialog object and return it
         return builder.create()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        listener = when (context) {
+            is SaveNewToDoItem -> context
+            else -> throw ClassCastException(context.toString() + " must implement SaveNewToDoItem.")
+        }
     }
 
     private fun addItemToList() = ToDoItem(getTitleToString(), getCurrentDate(), prioritySelection)
@@ -78,7 +84,4 @@ class AddDialog : DialogFragment() {
         return simpleDateFormat.format(time)
     }
 
-    private fun setSaveNewToDoItem(listener: SaveNewToDoItem) {
-        this.listener = listener
-    }
 }
