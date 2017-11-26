@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     }
 
     private fun initialiseDummyList() {
-        dummyList.add(ToDoItem("One", "25th November 2017", ToDoItem.Priority.HIGH))
-        dummyList.add(ToDoItem("Two", "24th November 2017", ToDoItem.Priority.MEDIUM))
-        dummyList.add(ToDoItem("Three", "23th November 2017", ToDoItem.Priority.LOW))
+        dummyList.add(ToDoItem("One", "Sun, 26 Nov 2017, 20:58", ToDoItem.Priority.HIGH))
+        dummyList.add(ToDoItem("Two", "Sat, 25 Nov 2017, 10:50", ToDoItem.Priority.MEDIUM))
+        dummyList.add(ToDoItem("Three", "Fri, 24 Nov 2017, 12:00", ToDoItem.Priority.LOW))
     }
 
 }

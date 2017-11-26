@@ -18,8 +18,8 @@ class RecyclerViewAdapter (list: List<ToDoItem>) : RecyclerView.Adapter<ItemView
 
 
     fun updateList(list: List<ToDoItem>) {
-        this.list = list
-
+        val sortedList = list.sortedWith(compareBy({ it.priority }, { it.date }, { it.title }))
+        this.list = sortedList
         notifyDataSetChanged()
     }
 
