@@ -1,16 +1,19 @@
 package com.novembergave.todolist
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
+    override fun addItem(item: ToDoItem) {
+        // add to list
+    }
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerViewAdapter
-    var dummyList: List<ToDoItem> = listOf(
+    private var dummyList: List<ToDoItem> = arrayListOf(
             ToDoItem("One", "25th November 2017", ToDoItem.Priority.HIGH),
             ToDoItem("Two", "24th November 2017", ToDoItem.Priority.MEDIUM),
             ToDoItem("Three", "23th November 2017", ToDoItem.Priority.LOW))
@@ -32,5 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         adapter = RecyclerViewAdapter(dummyList)
         recyclerview.adapter = adapter
+
+
     }
 }
