@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
@@ -43,4 +44,8 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
         dummyList.add(ToDoItem("Three", "Fri, 24 Nov 2017, 12:00", ToDoItem.Priority.LOW))
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_past, menu)
+        return true
+    }
 }
