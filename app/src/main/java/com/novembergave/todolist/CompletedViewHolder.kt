@@ -1,0 +1,49 @@
+package com.novembergave.todolist
+
+import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import kotlinx.android.synthetic.main.completed_list_item.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+
+
+class CompletedViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+    private var view = v
+
+    fun bindTo(item: ToDoItem) {
+        view.completed_item_title.text = item.title
+        view.completed_item_start_date.text = setCurrentDate(item.dateAdded)
+        view.completed_item_end_date.text = setCurrentDate(item.dateCompleted)
+        // TODO: Work out how to display number of days
+        val textColor = when {
+            item.priority == ToDoItem.Priority.HIGH ->
+                ContextCompat.getColor(view.context, R.color.priorityHigh)
+            item.priority == ToDoItem.Priority.MEDIUM ->
+                ContextCompat.getColor(view.context, R.color.priorityMedium)
+            item.priority == ToDoItem.Priority.LOW ->
+                ContextCompat.getColor(view.context, R.color.priorityLow)
+            else -> ContextCompat.getColor(view.context, R.color.priorityLow)
+        }
+
+        setTextColor(textColor)
+    }
+
+    private fun setCurrentDate(date: Long?): String {
+        val simpleDateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.getDefault())
+        return simpleDateFormat.format(date)
+    }
+
+    private fun setTextColor(@ColorInt color: Int) {
+        view.completed_item_title.setTextColor(color)
+        view.completed_item_start_date_label.setTextColor(color)
+        view.completed_item_start_date.setTextColor(color)
+        view.completed_item_end_date_label.setTextColor(color)
+        view.completed_item_end_date.setTextColor(color)
+        view.completed_item_days_label.setTextColor(color)
+        view.completed_item_number_days.setTextColor(color)
+    }
+
+}

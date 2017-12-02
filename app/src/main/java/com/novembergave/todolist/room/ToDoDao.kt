@@ -12,6 +12,12 @@ interface ToDoDao {
     @Query("SELECT * FROM to_do_list")
     fun findAll(): Flowable<List<ToDoEntity>>
 
+    @Query("SELECT * FROM to_do_list where date_completed > 0")
+    fun findAllCompleted(): Flowable<List<ToDoEntity>>
+
+    @Query("SELECT * FROM to_do_list where date_completed = 0")
+    fun findAllOutstanding(): Flowable<List<ToDoEntity>>
+
     @Query("select * from to_do_list where id = :id")
     fun findItemById(id: Long): Flowable<ToDoEntity>
 

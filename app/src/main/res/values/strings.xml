@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">To-Do List</string>
+    <string name="completed_activity">Completed Items</string>
     <string name="to_do_item">To-Do Item</string>
     <string name="priority">Priority</string>
     <string name="add_item">Add an Item</string>
@@ -8,6 +9,10 @@
     <string name="medium">Medium</string>
     <string name="low">Low</string>
     <string name="view_completed_tasks">View Completed Tasks</string>
+    <string name="delete_forever">Delete Forever</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End date:</string>
+    <string name="days">days</string>
 
     <string-array name="priority_levels">
         <item>@string/high</item>

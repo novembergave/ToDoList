@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/item_date"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@+id/completed_guideline"
             tools:text="Item one long long long long long long long long long long longlong long long long long to test long text hihihihihihihihihiihihihihihihihiokpmoijiohuiuhioouioijii"
             />
 
@@ -54,7 +54,7 @@
             />
 
     <android.support.constraint.Guideline
-            android:id="@+id/guideline"
+            android:id="@+id/completed_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

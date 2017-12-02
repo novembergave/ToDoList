@@ -11,7 +11,4 @@ data class ToDoEntity constructor(@ColumnInfo(name = "id")
                                   @ColumnInfo(name = "date_added") val dateAdded: Long,
                                   @ColumnInfo(name = "date_completed") val dateCompleted: Long?,
                                   @ColumnInfo(name = "priority") val priority: String) {
-//    @ColumnInfo(name = "id")
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Long = 0
 }

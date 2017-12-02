@@ -1,10 +1,12 @@
 package com.novembergave.todolist
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
+import android.view.MenuItem
 import com.novembergave.todolist.room.ToDoDatabase
 import com.novembergave.todolist.room.ToDoEntity
 import com.novembergave.todolist.utils.getCurrentDate
@@ -20,8 +22,21 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     lateinit var roomToDoDatabase: ToDoDatabase
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerViewAdapter
-    private var dummyList: MutableList<ToDoItem> = ArrayList()
+    private var itemList: MutableList<ToDoItem> = ArrayList()
     private lateinit var fabButton: FloatingActionButton
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_past, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.view_completed) {
+            startActivity(Intent(this, CompletedActivity::class.java))
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +53,15 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
         loadList()
 
         linearLayoutManager = LinearLayoutManager(this)
-        recyclerview.layoutManager = linearLayoutManager
-        adapter = RecyclerViewAdapter(dummyList, this::onItemChecked)
-        recyclerview.adapter = adapter
+        completed_recyclerview.layoutManager = linearLayoutManager
+        adapter = RecyclerViewAdapter(itemList, this::onItemChecked)
+        completed_recyclerview.adapter = adapter
 
     }
 
     private fun onItemChecked(item: ToDoItem) {
-        dummyList.remove(item)
-        adapter.updateList(dummyList)
+        itemList.remove(item)
+        adapter.updateList(itemList)
         markItemAsDone(item)
 
     }
@@ -59,15 +74,8 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
                 .subscribe()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_past, menu)
-        return true
-    }
-
     override fun addItem(item: ToDoItem) {
         addItemToDb(item)
-        dummyList.add(item)
-        adapter.updateList(dummyList)
     }
 
     private fun addItemToDb(item: ToDoItem) {
@@ -80,22 +88,19 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     }
 
     private fun loadList() {
-        roomToDoDatabase.toDoDao().findAll()
+        roomToDoDatabase.toDoDao().findAllOutstanding()
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe { results ->
-                    dummyList = convertToDoEntityListToToDo(results)
-                    adapter.updateList(dummyList)
+                    itemList = convertToDoEntityListToToDo(results)
+                    adapter.updateList(itemList)
                 }
     }
 
     private fun convertToDoEntityListToToDo(list: List<ToDoEntity>): MutableList<ToDoItem> {
         val newList: MutableList<ToDoItem> = ArrayList()
-        list.forEach {
-            if (it.dateCompleted!! == 0L) {
-                val toDoItem = ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority))
-                newList.add(toDoItem)
-            }
+        for (it in list) {
+            newList.add(ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority)))
         }
         return newList
     }
