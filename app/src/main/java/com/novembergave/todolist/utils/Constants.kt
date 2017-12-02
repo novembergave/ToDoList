@@ -1,4 +1,4 @@
-package com.novembergave.todolist
+package com.novembergave.todolist.utils
 
 
 class Constants {

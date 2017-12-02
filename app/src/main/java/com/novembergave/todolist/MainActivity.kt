@@ -39,9 +39,9 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     }
 
     private fun initialiseDummyList() {
-        dummyList.add(ToDoItem("One", "Sun, 26 Nov 2017, 20:58", ToDoItem.Priority.HIGH))
-        dummyList.add(ToDoItem("Two", "Sat, 25 Nov 2017, 10:50", ToDoItem.Priority.MEDIUM))
-        dummyList.add(ToDoItem("Three", "Fri, 24 Nov 2017, 12:00", ToDoItem.Priority.LOW))
+        dummyList.add(ToDoItem("One", 1512224806372L, 0, ToDoItem.Priority.HIGH))
+        dummyList.add(ToDoItem("Two", 1512224855096L, 0, ToDoItem.Priority.MEDIUM))
+        dummyList.add(ToDoItem("Three", 1512224839258L, 0, ToDoItem.Priority.LOW))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

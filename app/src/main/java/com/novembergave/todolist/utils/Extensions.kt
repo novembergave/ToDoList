@@ -1,4 +1,4 @@
-package com.novembergave.todolist
+package com.novembergave.todolist.utils
 
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater

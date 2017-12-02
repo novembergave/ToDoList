@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -74,16 +73,14 @@ class AddDialog : DialogFragment() {
         }
     }
 
-    private fun addItemToList() = ToDoItem(getTitleToString(), getCurrentDate(), prioritySelection)
+    private fun addItemToList() = ToDoItem(getTitleToString(), getCurrentDate(), 0, prioritySelection)
 
     private fun getTitleToString(): String {
         return titleTextInput.editText!!.text.toString()
     }
 
-    private fun getCurrentDate(): String {
-        val time = Calendar.getInstance().time
-        val simpleDateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.getDefault())
-        return simpleDateFormat.format(time)
+    private fun getCurrentDate(): Long {
+        return Calendar.getInstance().timeInMillis
     }
 
 }

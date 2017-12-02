@@ -3,9 +3,10 @@ package com.novembergave.todolist
 import java.io.Serializable
 
 
-class ToDoItem(title: String, date: String, priority: Priority) : Serializable {
+class ToDoItem(title: String, dateAdded: Long, dateCompleted: Long?, priority: Priority) : Serializable {
     var title: String = title
-    var date: String = date
+    var dateAdded: Long = dateAdded
+    var dateCompleted: Long? = dateCompleted
     var priority: Priority = priority
 
     enum class Priority {
@@ -19,7 +20,8 @@ class ToDoItem(title: String, date: String, priority: Priority) : Serializable {
         other as ToDoItem
 
         if (title != other.title) return false
-        if (date != other.date) return false
+        if (dateAdded != other.dateAdded) return false
+        if (dateCompleted != other.dateCompleted) return false
         if (priority != other.priority) return false
 
         return true
@@ -27,13 +29,15 @@ class ToDoItem(title: String, date: String, priority: Priority) : Serializable {
 
     override fun hashCode(): Int {
         var result = title.hashCode()
-        result = 31 * result + date.hashCode()
+        result = 31 * result + dateAdded.hashCode()
+        result = 31 * result + (dateCompleted?.hashCode() ?: 0)
         result = 31 * result + priority.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "ToDoItem(title='$title', date='$date', priority=$priority)"
+        return "ToDoItem(title='$title', dateAdded='$dateAdded', dateCompleted=$dateCompleted, priority=$priority)"
     }
+
 
 }

@@ -2,6 +2,8 @@ package com.novembergave.todolist
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.novembergave.todolist.utils.CompareOutstandingToDos
+import com.novembergave.todolist.utils.inflate
 
 
 class RecyclerViewAdapter (list: List<ToDoItem>) : RecyclerView.Adapter<ItemViewHolder>() {
@@ -18,7 +20,7 @@ class RecyclerViewAdapter (list: List<ToDoItem>) : RecyclerView.Adapter<ItemView
 
 
     fun updateList(list: List<ToDoItem>) {
-        val sortedList = list.sortedWith(compareBy({ it.priority }, { it.date }, { it.title }))
+        val sortedList = list.sortedWith(CompareOutstandingToDos)
         this.list = sortedList
         notifyDataSetChanged()
     }
