@@ -7,17 +7,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import com.novembergave.todolist.room.ToDoDatabase
 import com.novembergave.todolist.room.ToDoEntity
+import com.novembergave.todolist.utils.getCurrentDate
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
-    override fun addItem(item: ToDoItem) {
-        val dao = roomToDoDatabase.toDoDao()
-        val user = ToDoEntity(item.title, item.dateAdded, item.dateCompleted, item.priority.toString())
-        dao.createItem(user)
-        dummyList.add(item)
-        adapter.updateList(dummyList)
-    }
 
     @Inject
     lateinit var roomToDoDatabase: ToDoDatabase
@@ -38,7 +35,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
             pop.show(fm, "name")
         }
 
-        initialiseDummyList()
+        loadList()
 
         linearLayoutManager = LinearLayoutManager(this)
         recyclerview.layoutManager = linearLayoutManager
@@ -47,19 +44,59 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
 
     }
 
-    private fun initialiseDummyList() {
-        dummyList.add(ToDoItem("One", 1512224806372L, 0, ToDoItem.Priority.HIGH))
-        dummyList.add(ToDoItem("Two", 1512224855096L, 0, ToDoItem.Priority.MEDIUM))
-        dummyList.add(ToDoItem("Three", 1512224839258L, 0, ToDoItem.Priority.LOW))
-    }
-
     private fun onItemChecked(item: ToDoItem) {
         dummyList.remove(item)
         adapter.updateList(dummyList)
+        markItemAsDone(item)
+
+    }
+
+    private fun markItemAsDone(item: ToDoItem) {
+        val entity = ToDoEntity(item.id, item.title, item.dateAdded, getCurrentDate(), item.priority.toString())
+        Single.fromCallable { roomToDoDatabase.toDoDao().updateItem(entity) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_past, menu)
         return true
+    }
+
+    override fun addItem(item: ToDoItem) {
+        addItemToDb(item)
+        dummyList.add(item)
+        adapter.updateList(dummyList)
+    }
+
+    private fun addItemToDb(item: ToDoItem) {
+        val databaseItem = ToDoEntity(item.id, item.title, item.dateAdded, item.dateCompleted, item.priority.toString())
+
+        Single.fromCallable { roomToDoDatabase.toDoDao().createItem(databaseItem) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+    }
+
+    private fun loadList() {
+        roomToDoDatabase.toDoDao().findAll()
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe { results ->
+                    dummyList = convertToDoEntityListToToDo(results)
+                    adapter.updateList(dummyList)
+                }
+    }
+
+    private fun convertToDoEntityListToToDo(list: List<ToDoEntity>): MutableList<ToDoItem> {
+        val newList: MutableList<ToDoItem> = ArrayList()
+        list.forEach {
+            if (it.dateCompleted!! == 0L) {
+                val toDoItem = ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority))
+                newList.add(toDoItem)
+            }
+        }
+        return newList
     }
 }

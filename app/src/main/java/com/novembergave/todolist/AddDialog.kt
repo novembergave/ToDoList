@@ -10,8 +10,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import java.util.*
-
+import com.novembergave.todolist.utils.getCurrentDate
 
 class AddDialog : DialogFragment() {
 
@@ -73,14 +72,10 @@ class AddDialog : DialogFragment() {
         }
     }
 
-    private fun addItemToList() = ToDoItem(getTitleToString(), getCurrentDate(), 0, prioritySelection)
+    private fun addItemToList() = ToDoItem(0, getTitleToString(), getCurrentDate(), 0, prioritySelection)
 
     private fun getTitleToString(): String {
         return titleTextInput.editText!!.text.toString()
-    }
-
-    private fun getCurrentDate(): Long {
-        return Calendar.getInstance().timeInMillis
     }
 
 }

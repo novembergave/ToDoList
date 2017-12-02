@@ -3,7 +3,8 @@ package com.novembergave.todolist
 import java.io.Serializable
 
 
-class ToDoItem(title: String, dateAdded: Long, dateCompleted: Long?, priority: Priority) : Serializable {
+class ToDoItem(id: Long, title: String, dateAdded: Long, dateCompleted: Long?, priority: Priority) : Serializable {
+    var id: Long = id
     var title: String = title
     var dateAdded: Long = dateAdded
     var dateCompleted: Long? = dateCompleted

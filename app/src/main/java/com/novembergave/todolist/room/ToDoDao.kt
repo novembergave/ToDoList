@@ -1,6 +1,7 @@
 package com.novembergave.todolist.room
 
 import android.arch.persistence.room.*
+import io.reactivex.Flowable
 
 @Dao
 interface ToDoDao {
@@ -9,11 +10,14 @@ interface ToDoDao {
     fun createItem(user: ToDoEntity)
 
     @Query("SELECT * FROM to_do_list")
-    fun findAll(): List<ToDoEntity>
+    fun findAll(): Flowable<List<ToDoEntity>>
 
-    @Update
-    fun updateItem(user: ToDoEntity)
+    @Query("select * from to_do_list where id = :id")
+    fun findItemById(id: Long): Flowable<ToDoEntity>
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateItem(item: ToDoEntity)
 
     @Delete
-    fun deleteItem(user: ToDoEntity)
+    fun deleteItem(item: ToDoEntity)
 }
