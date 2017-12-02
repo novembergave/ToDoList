@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
 
         linearLayoutManager = LinearLayoutManager(this)
         recyclerview.layoutManager = linearLayoutManager
-        adapter = RecyclerViewAdapter(dummyList)
+        adapter = RecyclerViewAdapter(dummyList, this::onItemChecked)
         recyclerview.adapter = adapter
 
     }
@@ -42,6 +42,11 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
         dummyList.add(ToDoItem("One", 1512224806372L, 0, ToDoItem.Priority.HIGH))
         dummyList.add(ToDoItem("Two", 1512224855096L, 0, ToDoItem.Priority.MEDIUM))
         dummyList.add(ToDoItem("Three", 1512224839258L, 0, ToDoItem.Priority.LOW))
+    }
+
+    private fun onItemChecked(item: ToDoItem) {
+        dummyList.remove(item)
+        adapter.updateList(dummyList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

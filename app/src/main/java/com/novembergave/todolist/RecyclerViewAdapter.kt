@@ -6,18 +6,15 @@ import com.novembergave.todolist.utils.CompareOutstandingToDos
 import com.novembergave.todolist.utils.inflate
 
 
-class RecyclerViewAdapter (list: List<ToDoItem>) : RecyclerView.Adapter<ItemViewHolder>() {
-
-    private var list:List<ToDoItem> = list
+class RecyclerViewAdapter(private var list: List<ToDoItem>, private var changeListener: (ToDoItem) -> Unit) : RecyclerView.Adapter<ItemViewHolder>() {
 
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bindTo(list[position])
+        holder.bindTo(list[position], changeListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ItemViewHolder(parent.inflate(R.layout.list_item))
-
 
     fun updateList(list: List<ToDoItem>) {
         val sortedList = list.sortedWith(CompareOutstandingToDos)

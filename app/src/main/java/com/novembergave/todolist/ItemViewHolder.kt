@@ -12,7 +12,7 @@ class ItemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
     private var view = v
 
-    fun bindTo(item: ToDoItem) {
+    fun bindTo(item: ToDoItem, listener: (ToDoItem) -> Unit) {
         view.item_title.text = item.title
         view.item_date.text = setCurrentDate(item.dateAdded)
         val backgroundColor = when {
@@ -26,6 +26,12 @@ class ItemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                 }
 
         view.item_holder.setBackgroundColor(backgroundColor)
+        // clears the view holder so that when it is reused it is not checked
+        view.item_check_box.setOnCheckedChangeListener(null)
+        view.item_check_box.isChecked = false
+        view.item_check_box.setOnCheckedChangeListener { _, _ ->
+            listener(item)
+        }
     }
 
     private fun setCurrentDate(date: Long): String {
