@@ -5,14 +5,22 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
+import com.novembergave.todolist.room.ToDoDatabase
+import com.novembergave.todolist.room.ToDoEntity
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     override fun addItem(item: ToDoItem) {
+        val dao = roomToDoDatabase.toDoDao()
+        val user = ToDoEntity(item.title, item.dateAdded, item.dateCompleted, item.priority.toString())
+        dao.createItem(user)
         dummyList.add(item)
         adapter.updateList(dummyList)
     }
 
+    @Inject
+    lateinit var roomToDoDatabase: ToDoDatabase
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerViewAdapter
     private var dummyList: MutableList<ToDoItem> = ArrayList()
@@ -21,6 +29,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        App.component.inject(this)
 
         fabButton = findViewById(R.id.fab_button)
         fabButton.setOnClickListener {
