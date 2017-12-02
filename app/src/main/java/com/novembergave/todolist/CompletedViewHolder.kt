@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.completed_list_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class CompletedViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
     private var view = v
@@ -17,7 +16,7 @@ class CompletedViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         view.completed_item_title.text = item.title
         view.completed_item_start_date.text = setCurrentDate(item.dateAdded)
         view.completed_item_end_date.text = setCurrentDate(item.dateCompleted)
-        // TODO: Work out how to display number of days
+        view.completed_item_number_days.text = getDaysDifference(item.dateAdded, item.dateCompleted)
         val textColor = when {
             item.priority == ToDoItem.Priority.HIGH ->
                 ContextCompat.getColor(view.context, R.color.priorityHigh)
@@ -34,6 +33,15 @@ class CompletedViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     private fun setCurrentDate(date: Long?): String {
         val simpleDateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.getDefault())
         return simpleDateFormat.format(date)
+    }
+
+    private fun getDaysDifference(startDate: Long, endDate: Long?): String {
+        val difference = endDate?.minus(startDate)
+        var days = difference?.div(86400000)
+        if (days?.compareTo(1) == -1) {
+            days = 0L
+        }
+        return days.toString()
     }
 
     private fun setTextColor(@ColorInt color: Int) {
