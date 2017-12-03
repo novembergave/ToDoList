@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.novembergave.todolist.room.ToDoDatabase
 import com.novembergave.todolist.room.ToDoEntity
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_completed.*
 import javax.inject.Inject
 
 
@@ -60,6 +61,11 @@ class CompletedActivity : AppCompatActivity() {
                 ?.subscribe { results ->
                     itemList = convertToDoEntityListToToDo(results)
                     adapter.updateList(itemList)
+                    if (results.isNotEmpty()) {
+                        completed_recyclerview.visibility = View.VISIBLE
+                        completed_image.visibility = View.GONE
+                        completed_text.visibility = View.GONE
+                    }
                 }
     }
 
@@ -81,5 +87,8 @@ class CompletedActivity : AppCompatActivity() {
         }
         itemList.clear()
         adapter.updateList(itemList)
+        completed_recyclerview.visibility = View.GONE
+        completed_image.visibility = View.VISIBLE
+        completed_text.visibility = View.VISIBLE
     }
 }

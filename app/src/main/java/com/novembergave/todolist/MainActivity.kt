@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.novembergave.todolist.room.ToDoDatabase
 import com.novembergave.todolist.room.ToDoEntity
 import com.novembergave.todolist.utils.getCurrentDate
@@ -53,15 +54,19 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
         loadList()
 
         linearLayoutManager = LinearLayoutManager(this)
-        completed_recyclerview.layoutManager = linearLayoutManager
+        recyclerview.layoutManager = linearLayoutManager
         adapter = RecyclerViewAdapter(itemList, this::onItemChecked)
-        completed_recyclerview.adapter = adapter
+        recyclerview.adapter = adapter
 
     }
 
     private fun onItemChecked(item: ToDoItem) {
         itemList.remove(item)
         adapter.updateList(itemList)
+        if (itemList.isEmpty()) {
+            recyclerview.visibility = View.GONE
+            empty_placeholder_view.visibility = View.VISIBLE
+        }
         markItemAsDone(item)
 
     }
@@ -94,6 +99,10 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
                 ?.subscribe { results ->
                     itemList = convertToDoEntityListToToDo(results)
                     adapter.updateList(itemList)
+                    if (results.isNotEmpty()) {
+                        recyclerview.visibility = View.VISIBLE
+                        empty_placeholder_view.visibility = View.GONE
+                    }
                 }
     }
 
