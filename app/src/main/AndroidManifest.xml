@@ -22,6 +22,12 @@
         <activity
                 android:name=".CompletedActivity"
                 android:windowSoftInputMode="adjustResize" />
+
+        <provider
+                android:name="com.novembergave.todolist.provider.TaskContentProvider"
+                android:authorities="com.novembergave.todolist"
+                android:exported="false" />
+
     </application>
 
 </manifest>

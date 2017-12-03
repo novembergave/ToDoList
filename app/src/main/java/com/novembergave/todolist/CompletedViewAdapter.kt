@@ -22,3 +22,28 @@ class CompletedViewAdapter(private var list: List<ToDoItem>) : RecyclerView.Adap
     }
 
 }
+
+//private class CompletedViewAdapter : RecyclerView.Adapter<CompletedViewHolder>() {
+//
+//    private var mCursor: Cursor? = null
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedViewHolder {
+//        return CompletedViewHolder(parent)
+//    }
+//
+//    override fun onBindViewHolder(holder: CompletedViewHolder, position: Int) {
+//        if (mCursor!!.moveToPosition(position)) {
+//            holder.bindTo(mCursor.moveToPosition(position))
+//        }
+//    }
+//
+//    override fun getItemCount(): Int {
+//        return if (mCursor == null) 0 else mCursor!!.count
+//    }
+//
+//    internal fun setCheeses(cursor: Cursor?) {
+//        mCursor = cursor
+//        notifyDataSetChanged()
+//    }
+//
+//}
