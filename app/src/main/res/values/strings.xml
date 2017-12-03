@@ -16,6 +16,10 @@
     <string name="empty_placeholder">Click add to start adding items \nto your To-Do List</string>
     <string name="completed_placeholder">All completed tasks will show here</string>
 
+    <string name="delete_all">Delete all items forever?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string-array name="priority_levels">
         <item>@string/high</item>
         <item>@string/medium</item>

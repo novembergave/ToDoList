@@ -2,7 +2,6 @@ package com.novembergave.todolist
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RecyclerViewAdapter
     private var itemList: MutableList<ToDoItem> = ArrayList()
-    private lateinit var fabButton: FloatingActionButton
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_past, menu)
@@ -44,15 +42,17 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
         setContentView(R.layout.activity_main)
         App.component.inject(this)
 
-        fabButton = findViewById(R.id.fab_button)
-        fabButton.setOnClickListener {
+        // set up fab
+        fab_button.setOnClickListener {
             val pop = AddDialog()
             val fm = this@MainActivity.fragmentManager
-            pop.show(fm, "name")
+            pop.show(fm, "add")
         }
 
+        // load list saved in Room
         loadList()
 
+        // initialise recyclerview
         linearLayoutManager = LinearLayoutManager(this)
         recyclerview.layoutManager = linearLayoutManager
         adapter = RecyclerViewAdapter(itemList, this::onItemChecked)
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     private fun onItemChecked(item: ToDoItem) {
         itemList.remove(item)
         adapter.updateList(itemList)
+        // show empty placeholder if there are no items left in the list
         if (itemList.isEmpty()) {
             recyclerview.visibility = View.GONE
             empty_placeholder_view.visibility = View.VISIBLE
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     }
 
     private fun markItemAsDone(item: ToDoItem) {
+        // add a completed time stamp and update item in Room
         val entity = ToDoEntity(item.id, item.title, item.dateAdded, getCurrentDate(), item.priority.toString())
         Single.fromCallable { roomToDoDatabase.toDoDao().updateItem(entity) }
                 .subscribeOn(Schedulers.io())
@@ -80,12 +82,8 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
     }
 
     override fun addItem(item: ToDoItem) {
-        addItemToDb(item)
-    }
-
-    private fun addItemToDb(item: ToDoItem) {
+        // add item to Room
         val databaseItem = ToDoEntity(item.id, item.title, item.dateAdded, item.dateCompleted, item.priority.toString())
-
         Single.fromCallable { roomToDoDatabase.toDoDao().createItem(databaseItem) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -99,6 +97,7 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
                 ?.subscribe { results ->
                     itemList = convertToDoEntityListToToDo(results)
                     adapter.updateList(itemList)
+                    // clear the empty placeholder if there are items returned
                     if (results.isNotEmpty()) {
                         recyclerview.visibility = View.VISIBLE
                         empty_placeholder_view.visibility = View.GONE
@@ -108,9 +107,8 @@ class MainActivity : AppCompatActivity(), AddDialog.SaveNewToDoItem {
 
     private fun convertToDoEntityListToToDo(list: List<ToDoEntity>): MutableList<ToDoItem> {
         val newList: MutableList<ToDoItem> = ArrayList()
-        for (it in list) {
-            newList.add(ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority)))
-        }
+        // iterate through the list
+        list.mapTo(newList) { it -> ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority)) }
         return newList
     }
 }

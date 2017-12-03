@@ -9,16 +9,16 @@ interface ToDoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun createItem(user: ToDoEntity)
 
-    @Query("SELECT * FROM to_do_list")
+    @Query("SELECT * FROM $TABLE_NAME")
     fun findAll(): Flowable<List<ToDoEntity>>
 
-    @Query("SELECT * FROM to_do_list where date_completed > 0")
+    @Query("SELECT * FROM $TABLE_NAME where date_completed > 0")
     fun findAllCompleted(): Flowable<List<ToDoEntity>>
 
-    @Query("SELECT * FROM to_do_list where date_completed = 0")
+    @Query("SELECT * FROM $TABLE_NAME where date_completed = 0")
     fun findAllOutstanding(): Flowable<List<ToDoEntity>>
 
-    @Query("select * from to_do_list where id = :id")
+    @Query("select * from $TABLE_NAME where id = :id")
     fun findItemById(id: Long): Flowable<ToDoEntity>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

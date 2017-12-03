@@ -1,6 +1,7 @@
 package com.novembergave.todolist
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -29,14 +30,17 @@ class CompletedActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
-        } else if (item?.itemId == R.id.delete_forever) {
-            deleteAll()
-            return true
+        return when {
+            item?.itemId == android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            item?.itemId == R.id.delete_forever -> {
+                showDeleteAlert()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +50,10 @@ class CompletedActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.completed_activity)
 
+        // load data from Room
         loadList()
 
+        // initialise the recyclerView
         linearLayoutManager = LinearLayoutManager(this)
         completed_recyclerview.layoutManager = linearLayoutManager
         adapter = CompletedViewAdapter(itemList)
@@ -61,6 +67,7 @@ class CompletedActivity : AppCompatActivity() {
                 ?.subscribe { results ->
                     itemList = convertToDoEntityListToToDo(results)
                     adapter.updateList(itemList)
+                    // remove the empty placeholder if there are items returned in list
                     if (results.isNotEmpty()) {
                         completed_recyclerview.visibility = View.VISIBLE
                         completed_image.visibility = View.GONE
@@ -70,6 +77,7 @@ class CompletedActivity : AppCompatActivity() {
     }
 
     private fun convertToDoEntityListToToDo(list: List<ToDoEntity>): MutableList<ToDoItem> {
+        // iterate through list and convert
         val newList: MutableList<ToDoItem> = ArrayList()
         list.forEach {
             newList.add(ToDoItem(it.id, it.title, it.dateAdded, it.dateCompleted, ToDoItem.Priority.valueOf(it.priority)))
@@ -77,7 +85,23 @@ class CompletedActivity : AppCompatActivity() {
         return newList
     }
 
+    private fun showDeleteAlert() {
+        // Only show alert if there's something to delete
+        if (itemList.isNotEmpty()) {
+            val alertDialog = AlertDialog.Builder(this).create()
+            alertDialog.setMessage(getString(R.string.delete_all))
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes), { _, _ ->
+                deleteAll()
+            })
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no), { dialogInterface, _ ->
+                dialogInterface.cancel()
+            })
+            alertDialog.show()
+        }
+    }
+
     private fun deleteAll() {
+        // iterate through the completed item list and delete
         itemList.forEach {
             val entity = ToDoEntity(it.id, it.title, it.dateAdded, it.dateCompleted, it.priority.toString())
             Single.fromCallable { roomToDoDatabase.toDoDao().deleteItem(entity) }
@@ -85,7 +109,9 @@ class CompletedActivity : AppCompatActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe()
         }
+        // clear the list stored in the global variable
         itemList.clear()
+        // update that UI
         adapter.updateList(itemList)
         completed_recyclerview.visibility = View.GONE
         completed_image.visibility = View.VISIBLE
